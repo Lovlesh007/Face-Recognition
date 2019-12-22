@@ -1,0 +1,28 @@
+#Training the data sets
+import cv2
+import numpy as np
+from os import listdir
+from os.path import isfile, join
+print("Training Started!!!")
+data_path = 'F:/Education/python_training/faces_samples/'
+onlyfiles = [f for f in listdir(data_path) if isfile(join(data_path,f))]
+
+Training_Data, Labels = [], []
+#enumerate provides us no. of itteration equal to number of files present...
+for i, files in enumerate(onlyfiles):
+    image_path = data_path + onlyfiles[i]
+    images = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
+    #the function imread only supports rgb images so upper we pass another argument IMREAD_GRAYSCALE to read gray scale images
+    #i m read ko pata chal jai ki aane wali images gray scale hai islie pass kiya hai extra argument
+    Training_Data.append(np.asarray(images, dtype=np.uint8))
+    #here we convert images into array because our model is not directly work on images path , they only when we convert images into array or it only fetch the data when images are in form of array.
+    Labels.append(i)
+
+Labels = np.asarray(Labels, dtype=np.int32)
+# Now we bulit our model
+model = cv2.face.LBPHFaceRecognizer_create()
+# Now train model and pass image the data
+#train the mtlb hai jo face recognization ka model hai usko hamare faces ka data chahiye hota hai taki hamare face pehchaan sake
+model.train(np.asarray(Training_Data), np.asarray(Labels))
+
+print("Model Training Complete!!!!!")
